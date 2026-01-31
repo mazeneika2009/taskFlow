@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help & Support - TaskFlow</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f9fafb;
+        }
+
+        header {
+            background-color: white;
+            border-bottom: 1px solid #eee;
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0ea5e9;
+            cursor: pointer;
+        }
+
+        nav {
+            display: flex;
+            gap: 30px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #666;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #0ea5e9;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .page-header h1 {
+            font-size: 42px;
+            color: #1f2937;
+            margin-bottom: 15px;
+        }
+
+        .page-header p {
+            font-size: 16px;
+            color: #666;
+        }
+
+        .search-container {
+            margin-bottom: 40px;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 12px 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #6366f1;
+        }
+
+        .search-box button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .search-box button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(14, 165, 233, 0.4);
+        }
+
+        .faq-section {
+            margin-bottom: 50px;
+        }
+
+        .faq-category-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .faq-item {
+            background-color: white;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+
+        .faq-question:hover {
+            background-color: #f9fafb;
+        }
+
+        .faq-question-text {
+            font-weight: 600;
+            color: #1f2937;
+            font-size: 15px;
+        }
+
+        .faq-toggle {
+            font-size: 20px;
+            color: #0ea5e9;
+            transition: transform 0.3s;
+        }
+
+        .faq-item.active .faq-toggle {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            display: none;
+            padding: 0 20px 20px 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .faq-item.active .faq-answer {
+            display: block;
+        }
+
+        .support-section {
+            background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .support-section h2 {
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+
+        .support-section p {
+            font-size: 16px;
+            margin-bottom: 25px;
+            opacity: 0.95;
+        }
+
+        .support-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-light {
+            background-color: white;
+            color: #0ea5e9;
+        }
+
+        .btn-light:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-outline:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .quick-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 50px 0;
+        }
+
+        .quick-link {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .quick-link:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .quick-link-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .quick-link-title {
+            font-weight: 600;
+            color: #1f2937;
+            font-size: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 28px;
+            }
+
+            nav {
+                display: none;
+            }
+
+            .search-box {
+                flex-direction: column;
+            }
+
+            .support-buttons {
+                flex-direction: column;
+            }
+        }
+
+        /* Modern Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes rotate3d {
+            0% {
+                transform: rotateX(0deg) rotateY(0deg);
+            }
+            100% {
+                transform: rotateX(8deg) rotateY(8deg);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            }
+            50% {
+                box-shadow: 0 8px 20px rgba(99, 102, 241, 0.2);
+            }
+        }
+
+        header {
+            animation: fadeInDown 0.6s ease-out;
+        }
+
+        .page-header {
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .page-header h1 {
+            background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .search-container {
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .search-box input:focus {
+            transform: scale(1.02);
+        }
+
+        .quick-links {
+            animation: fadeInUp 0.8s ease-out 0.3s both;
+        }
+
+        .quick-link {
+            animation: scaleIn 0.5s ease-out;
+            perspective: 1000px;
+        }
+
+        .quick-link:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .quick-link:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .quick-link:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .quick-link:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .quick-link:hover {
+            transform: translateY(-8px) rotateX(-5deg);
+        }
+
+        .faq-section {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .faq-item {
+            animation: fadeInUp 0.5s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .faq-item:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .faq-item:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .faq-item:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .faq-question {
+            perspective: 1000px;
+        }
+
+        .faq-question:hover {
+            transform: translateX(5px);
+        }
+
+        .faq-question:hover .faq-toggle {
+            color: #764ba2;
+        }
+
+        .support-section {
+            animation: scaleIn 0.6s ease-out 0.5s both;
+            perspective: 1000px;
+        }
+
+        .support-section:hover {
+            transform: perspective(1000px) rotateX(2deg) rotateY(2deg);
+            transition: transform 0.4s ease;
+        }
+
+        .btn {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.3);
+            transition: left 0.5s ease;
+            z-index: -1;
+        }
+
+        .btn:hover:before {
+            left: 100%;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <div class="logo" onclick="navigateTo('dashboard.html')">TaskFlow</div>
+            <nav>
+                <a href="add-project.html">Projects</a>
+                <a href="dashboard.html#teamMembersList">Team</a>
+                <a href="account.html">Settings</a>
+                <a href="help.html">Help</a>
+            </nav>
+            <div class="user-profile" onclick="navigateTo('account.html')" style="cursor: pointer;">
+                <span id="userNameDisplay">User</span>
+                <div class="avatar" id="userInitials">U</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>Help & Support</h1>
+            <p>Find answers to your questions and learn how to use TaskFlow</p>
+        </div>
+
+        <!-- Search -->
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search for help..." onkeyup="filterFAQ()">
+                <button onclick="filterFAQ()">Search</button>
+            </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="quick-links">
+            <div class="quick-link">
+                <div class="quick-link-icon">📚</div>
+                <div class="quick-link-title">Documentation</div>
+            </div>
+            <div class="quick-link">
+                <div class="quick-link-icon">🎓</div>
+                <div class="quick-link-title">Tutorials</div>
+            </div>
+            <div class="quick-link">
+                <div class="quick-link-icon">🐛</div>
+                <div class="quick-link-title">Report Bug</div>
+            </div>
+            <div class="quick-link">
+                <div class="quick-link-icon">💡</div>
+                <div class="quick-link-title">Feature Request</div>
+            </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="faq-section">
+            <h2 class="faq-category-title">Getting Started</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <span class="faq-question-text">How do I create a new project?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    To create a new project, click on the "Projects" link in the navigation menu or use the "Create New Project" button on the dashboard. Fill in the project details like name, category, and template, then click "Create Project".
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <span class="faq-question-text">How do I invite team members?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    You can invite team members by navigating to the Team section or clicking "Manage Team" on the dashboard. Enter the email addresses of the people you want to invite and assign them roles (Team Lead, Member, or Viewer). They will receive an invitation email.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <span class="faq-question-text">What are the different project templates?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    TaskFlow offers three project templates: Kanban Board (for workflow management), Timeline/Gantt (for project scheduling), and Checklist (for simple task tracking). Choose the one that best fits your project needs.
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-section">
+            <h2 class="faq-category-title">Managing Projects</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <span class="faq-question-text">How do I add tasks to my project?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    Click on "Add Tasks" in the Quick Actions section of the dashboard. Enter the task title, description, assign it to a team member, set a due date, and specify the priority level. Click "Add Task" to save it to your project.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <span class="faq-question-text">Can I change project privacy settings?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    Yes, you can set your project as either Private (only invited members can view) or Public (anyone can view but only members can edit). You can change this setting anytime by editing your project details.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <span class="faq-question-text">How do I edit or delete a project?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    Go to your project and click "Edit Project" to modify its details. To delete a project, open the project details modal and click the delete option. This action cannot be undone, so please be careful.
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-section">
+            <h2 class="faq-category-title">Team Collaboration</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <span class="faq-question-text">What are the different team member roles?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    TaskFlow has three roles: Team Lead (full access and can manage team), Member (can create and edit tasks), and Viewer (can only view tasks). Assign roles based on your team's needs.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <span class="faq-question-text">How do I remove a team member?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    Go to the Team Members section on the dashboard and click on the member you want to remove. Click the "Remove Member" button to revoke their access to the project.
+                </div>
+            </div>
+        </div>
+
+        <!-- Support Section -->
+        <div class="support-section">
+            <h2>Still Need Help?</h2>
+            <p>Can't find what you're looking for? Our support team is here to help!</p>
+            <div class="support-buttons">
+                <button class="btn btn-light" onclick="alert('Email support coming soon: support@taskflow.com')">Contact Support</button>
+                <button class="btn btn-outline" onclick="navigateTo('dashboard.html')">Back to Dashboard</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+
+        function toggleFAQ(element) {
+            const faqItem = element.parentElement;
+            faqItem.classList.toggle('active');
+        }
+
+        function filterFAQ() {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const faqItems = document.querySelectorAll('.faq-item');
+
+            faqItems.forEach(item => {
+                const questionText = item.querySelector('.faq-question-text').textContent.toLowerCase();
+                const answerText = item.querySelector('.faq-answer').textContent.toLowerCase();
+
+                if (questionText.includes(searchInput) || answerText.includes(searchInput)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        function loadUserData() {
+            const userName = localStorage.getItem('userName') || 'User';
+            const userLastName = localStorage.getItem('userLastName') || '';
+            const userInitials = (userName.charAt(0) + userLastName.charAt(0)).toUpperCase();
+
+            document.getElementById('userNameDisplay').textContent = userName;
+            document.getElementById('userInitials').textContent = userInitials;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserData();
+        });
+    </script>
+</body>
+</html>

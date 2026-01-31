@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invite Team - TaskFlow</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f9fafb;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            background-color: white;
+            padding: 20px 0;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 40px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0ea5e9;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            background: #6366f1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+        }
+
+        .sidebar {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            height: fit-content;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .sidebar h2 {
+            font-size: 16px;
+            color: #1f2937;
+            margin-bottom: 20px;
+        }
+
+        .progress-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .progress-step {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #f3f4f6;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .progress-step:hover:not(.active):not(.completed) {
+            background-color: #e5e7eb;
+        }
+
+        .progress-step.active {
+            background-color: #6366f1;
+            color: white;
+        }
+
+        .progress-step.completed {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .step-number {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            background-color: white;
+            color: #6366f1;
+        }
+
+        .progress-step.active .step-number {
+            background-color: white;
+            color: #6366f1;
+        }
+
+        .progress-step.completed .step-number {
+            background-color: #10b981;
+            color: white;
+        }
+
+        .form-card {
+            background-color: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-card h1 {
+            font-size: 32px;
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+
+        .form-card .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: #1f2937;
+            font-size: 14px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .email-input-group {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .email-input-group input {
+            margin-bottom: 0;
+        }
+
+        .btn-add {
+            padding: 12px 25px;
+            background-color: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #333;
+            transition: all 0.3s;
+            align-self: flex-end;
+        }
+
+        .btn-add:hover {
+            background-color: #e5e7eb;
+            border-color: #d1d5db;
+        }
+
+        .team-member-list {
+            margin-top: 25px;
+        }
+
+        .team-member-list h3 {
+            font-size: 16px;
+            color: #1f2937;
+            margin-bottom: 15px;
+        }
+
+        .member-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background-color: #f9fafb;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .member-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .member-avatar {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .member-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .member-email {
+            font-weight: 500;
+            color: #1f2937;
+            font-size: 14px;
+        }
+
+        .member-role {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .remove-btn {
+            background-color: transparent;
+            border: none;
+            color: #ef4444;
+            cursor: pointer;
+            font-size: 18px;
+            transition: opacity 0.3s;
+        }
+
+        .remove-btn:hover {
+            opacity: 0.7;
+        }
+
+        .role-select {
+            width: 150px;
+            padding: 8px 12px;
+            font-size: 13px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input[type="checkbox"] {
+            width: auto;
+            cursor: pointer;
+        }
+
+        .checkbox-label {
+            font-size: 14px;
+            cursor: pointer;
+            margin-bottom: 0;
+            font-weight: normal;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 40px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background-color: #f3f4f6;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e5e7eb;
+        }
+
+        .skip-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .skip-link a {
+            color: #6366f1;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .skip-link a:hover {
+            text-decoration: underline;
+        }
+
+        .info-box {
+            background-color: #f0f9ff;
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 25px;
+            font-size: 14px;
+            color: #1e40af;
+        }
+
+        /* Modern Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        header {
+            animation: fadeInDown 0.6s ease-out;
+        }
+
+        .sidebar {
+            animation: slideInLeft 0.7s ease-out 0.2s both;
+        }
+
+        .main-content {
+            animation: fadeInUp 0.8s ease-out 0.3s both;
+        }
+
+        .form-section {
+            animation: scaleIn 0.6s ease-out 0.3s both;
+            perspective: 1000px;
+        }
+
+        .form-section:hover {
+            box-shadow: 0 15px 40px rgba(99, 102, 241, 0.15);
+        }
+
+        .info-box {
+            animation: fadeInUp 0.6s ease-out 0.4s both;
+        }
+
+        .form-group {
+            animation: fadeInUp 0.5s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .form-group:nth-child(1) {
+            animation-delay: 0.4s;
+        }
+
+        .form-group:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+
+        input, select {
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            transform: scale(1.02);
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.2);
+        }
+
+        .email-input-group {
+            animation: fadeInUp 0.6s ease-out 0.5s both;
+        }
+
+        .btn-add {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-add::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.3);
+            transition: left 0.5s ease;
+            z-index: -1;
+        }
+
+        .btn-add:hover::before {
+            left: 100%;
+        }
+
+        .team-member {
+            animation: slideIn 0.4s ease-out;
+            animation-fill-mode: both;
+            perspective: 1000px;
+            transition: all 0.3s ease;
+        }
+
+        .team-member:hover {
+            transform: translateX(5px) rotateY(-2deg);
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.15);
+        }
+
+        .team-members-list {
+            animation: fadeInUp 0.6s ease-out 0.5s both;
+        }
+
+        .role-option {
+            animation: fadeInUp 0.5s ease-out;
+            animation-fill-mode: both;
+            perspective: 1000px;
+            transition: all 0.3s ease;
+        }
+
+        .role-option:nth-child(1) {
+            animation-delay: 0.55s;
+        }
+
+        .role-option:nth-child(2) {
+            animation-delay: 0.6s;
+        }
+
+        .role-option:nth-child(3) {
+            animation-delay: 0.65s;
+        }
+
+        .role-option:hover {
+            transform: translateY(-3px) scale(1.02);
+        }
+
+        .step-item {
+            animation: fadeInUp 0.5s ease-out;
+            animation-fill-mode: both;
+            transition: all 0.3s ease;
+        }
+
+        .step-item:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+
+        .step-item:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+
+        .step-item:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        .step-item:nth-child(4) {
+            animation-delay: 0.45s;
+        }
+
+        .step-item:hover {
+            transform: translateX(5px);
+            background: #f3f4f6;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .email-input-group {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-add {
+                width: 100%;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                order: -1;
+            }
+
+            .member-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .role-select {
+                width: 100%;
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="header-content">
+                <div class="logo">TaskFlow</div>
+                <div class="user-profile">
+                    <span id="userGreeting">Welcome, User!</span>
+                    <div class="avatar" id="userInitials">U</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Sidebar Progress -->
+            <div class="sidebar">
+                <h2>Setup Progress</h2>
+                <div class="progress-steps">
+                    <div class="progress-step completed">
+                        <div class="step-number">✓</div>
+                        <span>Create Account</span>
+                    </div>
+                    <div class="progress-step completed">
+                        <div class="step-number">✓</div>
+                        <span>Create Project</span>
+                    </div>
+                    <div class="progress-step active">
+                        <div class="step-number">3</div>
+                        <span>Invite Team</span>
+                    </div>
+                    <div class="progress-step" style="opacity: 0.5; cursor: not-allowed;">
+                        <div class="step-number">4</div>
+                        <span>Add Tasks</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Card -->
+            <div class="form-card">
+                <h1>Invite Your Team</h1>
+                <p class="subtitle">Build collaboration from day one. Add your team members and assign roles</p>
+
+                <div class="info-box">
+                    💡 Your team members will receive an invite email and can start collaborating immediately after accepting
+                </div>
+
+                <form id="inviteForm">
+                    <div class="form-group">
+                        <label for="email">Team Member Email *</label>
+                        <div class="email-input-group">
+                            <input type="email" id="email" placeholder="teammate@company.com" required>
+                            <button type="button" class="btn-add" onclick="addTeamMember(event)">+ Add Member</button>
+                        </div>
+                    </div>
+
+                    <div id="teamMembersList" class="team-member-list">
+                        <!-- Team members will be added here -->
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="sendWelcome" name="sendWelcome" checked>
+                        <label for="sendWelcome" class="checkbox-label">Send welcome email with tips and best practices</label>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" class="btn btn-secondary" onclick="navigateTo('add-project.html')">Back</button>
+                        <button type="submit" class="btn btn-primary" onclick="handleInviteSubmit(event)">Continue to Next Step</button>
+                    </div>
+
+                    <div class="skip-link">
+                        <a href="#" onclick="skipInvite(event)">Skip for now, I'll add team members later</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let teamMembers = [];
+
+        function addTeamMember(event) {
+            event.preventDefault();
+            const emailInput = document.getElementById('email');
+            const email = emailInput.value.trim();
+
+            if (!email) {
+                alert('Please enter an email address');
+                return;
+            }
+
+            if (!isValidEmail(email)) {
+                alert('Please enter a valid email address');
+                return;
+            }
+
+            if (teamMembers.some(member => member.email === email)) {
+                alert('This email is already added');
+                return;
+            }
+
+            const member = {
+                email: email,
+                role: 'member',
+                id: Date.now()
+            };
+
+            teamMembers.push(member);
+            emailInput.value = '';
+            renderTeamMembers();
+        }
+
+        function removeTeamMember(id) {
+            teamMembers = teamMembers.filter(member => member.id !== id);
+            renderTeamMembers();
+        }
+
+        function updateMemberRole(id, role) {
+            const member = teamMembers.find(m => m.id === id);
+            if (member) {
+                member.role = role;
+            }
+        }
+
+        function renderTeamMembers() {
+            const container = document.getElementById('teamMembersList');
+            
+            if (teamMembers.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+
+            let html = '<h3>' + teamMembers.length + ' Team Member' + (teamMembers.length !== 1 ? 's' : '') + ' Added</h3>';
+            
+            teamMembers.forEach(member => {
+                const initials = member.email.split('@')[0].substring(0, 2).toUpperCase();
+                html += `
+                    <div class="member-item">
+                        <div class="member-info">
+                            <div class="member-avatar">${initials}</div>
+                            <div class="member-details">
+                                <div class="member-email">${member.email}</div>
+                                <select class="member-role" onchange="updateMemberRole(${member.id}, this.value)">
+                                    <option value="member" ${member.role === 'member' ? 'selected' : ''}>Member</option>
+                                    <option value="admin" ${member.role === 'admin' ? 'selected' : ''}>Admin</option>
+                                    <option value="viewer" ${member.role === 'viewer' ? 'selected' : ''}>Viewer</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="button" class="remove-btn" onclick="removeTeamMember(${member.id})">✕</button>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function isValidEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+
+        function skipInvite(event) {
+            event.preventDefault();
+            alert('You can always add team members later from the Team Settings!');
+            
+            // Save empty team array to localStorage
+            localStorage.setItem('teamMembers', JSON.stringify([]));
+            
+            navigateTo('add-tasks.html');
+        }
+
+        function handleInviteSubmit(event) {
+            event.preventDefault();
+            if (teamMembers.length === 0) {
+                alert('Please add at least one team member or skip this step');
+                return;
+            }
+            
+            // Save team members to localStorage
+            localStorage.setItem('teamMembers', JSON.stringify(teamMembers));
+            
+            alert('Invites sent! Your team will receive emails shortly. Moving to add tasks...');
+            navigateTo('add-tasks.html');
+        }
+
+        // Load and display user name from localStorage
+        function loadUserData() {
+            const userName = localStorage.getItem('userName') || 'User';
+            const userLastName = localStorage.getItem('userLastName') || '';
+            const userInitials = (userName.charAt(0) + userLastName.charAt(0)).toUpperCase();
+            
+            document.getElementById('userGreeting').textContent = 'Welcome, ' + userName + '!';
+            document.getElementById('userInitials').textContent = userInitials;
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserData();
+        });
+
+        // Allow adding members by pressing Enter
+        document.getElementById('email').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addTeamMember(e);
+            }
+        });
+    </script>
+</body>
+</html>

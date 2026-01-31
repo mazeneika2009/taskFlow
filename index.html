@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow - Manage Projects Smarter, Not Harder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f9fafb;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header/Nav */
+        header {
+            background-color: #fff;
+            border-bottom: 1px solid #eee;
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0ea5e9;
+            z-index: 101;
+        }
+
+        nav a {
+            margin-left: 30px;
+            text-decoration: none;
+            color: #666;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #6366f1;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            z-index: 101;
+            padding: 10px;
+        }
+
+        .mobile-menu-btn span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background-color: #333;
+            margin: 5px 0;
+            transition: all 0.3s;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+            color: white;
+            padding: 100px 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 52px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .hero h2 {
+            font-size: 24px;
+            font-weight: 400;
+            margin-bottom: 40px;
+            opacity: 0.95;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background-color: #fff;
+            color: #667eea;
+            padding: 16px 40px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .cta-button.secondary {
+            background-color: transparent;
+            color: #fff;
+            border: 2px solid #fff;
+            margin-left: 20px;
+        }
+
+        .cta-button.secondary:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Section Spacing */
+        section {
+            padding: 80px 0;
+        }
+
+        section h2 {
+            font-size: 40px;
+            font-weight: 700;
+            margin-bottom: 50px;
+            text-align: center;
+            color: #1f2937;
+        }
+
+        section h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 15px;
+        }
+
+        /* Agitation Section */
+        .agitation {
+            background-color: #fff;
+        }
+
+        .pain-points {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+        }
+
+        .pain-point {
+            background-color: #f3f4f6;
+            padding: 30px;
+            border-radius: 12px;
+            border-left: 4px solid #ef4444;
+        }
+
+        .pain-point p {
+            font-size: 16px;
+            color: #555;
+            line-height: 1.8;
+        }
+
+        /* Solution Section */
+        .solution {
+            background-color: #f9fafb;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+        }
+
+        .feature-card {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: box-shadow 0.3s;
+        }
+
+        .feature-card:hover {
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .feature-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        .feature-card h3 {
+            color: #0ea5e9;
+            margin-bottom: 15px;
+        }
+
+        .feature-card p {
+            color: #666;
+            font-size: 15px;
+            line-height: 1.8;
+        }
+
+        /* Social Proof Section */
+        .social-proof {
+            background-color: #fff;
+            text-align: center;
+        }
+
+        .social-proof h2 {
+            margin-bottom: 60px;
+        }
+
+        .testimonial-placeholder {
+            background-color: #f3f4f6;
+            padding: 60px 40px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+        }
+
+        .testimonial-placeholder p {
+            font-size: 18px;
+            color: #666;
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+
+        .testimonial-author {
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .logos-placeholder {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin-top: 50px;
+        }
+
+        .logo-box {
+            background-color: #f3f4f6;
+            padding: 30px 50px;
+            border-radius: 8px;
+            color: #999;
+            font-weight: 500;
+        }
+
+        /* How It Works Section */
+        .how-it-works {
+            background-color: #f9fafb;
+        }
+
+        .steps-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 50px;
+        }
+
+        .step {
+            text-align: center;
+        }
+
+        .step-number {
+            background-color: #0ea5e9;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0 auto 25px;
+        }
+
+        .step h3 {
+            color: #1f2937;
+            margin-bottom: 15px;
+        }
+
+        .step p {
+            color: #666;
+            line-height: 1.8;
+        }
+
+        /* Pricing/Final CTA Section */
+        .final-cta {
+            background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .final-cta h2 {
+            color: white;
+            font-size: 44px;
+        }
+
+        .final-cta p {
+            font-size: 18px;
+            margin-bottom: 40px;
+            opacity: 0.95;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-flex {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .trust-message {
+            font-size: 16px;
+            margin-top: 30px;
+            opacity: 0.9;
+        }
+
+        .trust-message strong {
+            color: #fff;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #1f2937;
+            color: #999;
+            padding: 40px 0;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        footer a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 15px;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            nav {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100vh;
+                background-color: white;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                transform: translateX(100%);
+                transition: transform 0.3s ease-in-out;
+                z-index: 100;
+            }
+
+            nav.active {
+                transform: translateX(0);
+            }
+
+            nav a {
+                margin: 15px 0;
+                font-size: 20px;
+                margin-left: 0;
+            }
+
+            /* Hamburger Animation */
+            .mobile-menu-btn.active span:nth-child(1) {
+                transform: rotate(45deg) translate(5px, 5px);
+            }
+
+            .mobile-menu-btn.active span:nth-child(2) {
+                opacity: 0;
+            }
+
+            .mobile-menu-btn.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(7px, -6px);
+            }
+
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .hero h2 {
+                font-size: 18px;
+            }
+
+            .pain-points,
+            .features-grid,
+            .steps-container {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            section {
+                padding: 50px 0;
+            }
+
+            .cta-button.secondary {
+                margin-left: 0;
+                margin-top: 15px;
+                display: block;
+            }
+            
+            .testimonial-placeholder {
+                padding: 30px 20px;
+            }
+            
+            .logos-placeholder {
+                gap: 20px;
+            }
+            
+            .logo-box {
+                width: 100%;
+                padding: 20px;
+            }
+        }
+
+        /* Modern Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+
+        @keyframes rotateIn {
+            from {
+                opacity: 0;
+                transform: rotate(-10deg) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: rotate(0) scale(1);
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -1000px 0;
+            }
+            100% {
+                background-position: 1000px 0;
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        header {
+            animation: fadeInDown 0.6s ease-out;
+        }
+
+        .hero {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .hero h1 {
+            animation: fadeInDown 0.8s ease-out 0.2s both;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero h2 {
+            animation: fadeInDown 0.8s ease-out 0.4s both;
+        }
+
+        .hero .cta-button {
+            animation: scaleIn 0.6s ease-out 0.6s both;
+        }
+
+        .hero .cta-button.secondary {
+            animation: scaleIn 0.6s ease-out 0.7s both;
+        }
+
+        .cta-button {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.3);
+            transition: left 0.5s ease;
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        .pain-point {
+            animation: fadeInUp 0.6s ease-out;
+            animation-fill-mode: both;
+            perspective: 1000px;
+            transition: all 0.3s ease;
+        }
+
+        .pain-point:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+
+        .pain-point:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+
+        .pain-point:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        .pain-point:hover {
+            transform: translateY(-8px) rotateX(-5deg);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            border-left-color: #6366f1;
+        }
+
+        .feature-card {
+            animation: scaleIn 0.6s ease-out;
+            animation-fill-mode: both;
+            perspective: 1000px;
+        }
+
+        .feature-card:nth-child(1) {
+            animation-delay: 0.3s;
+        }
+
+        .feature-card:nth-child(2) {
+            animation-delay: 0.4s;
+        }
+
+        .feature-card:nth-child(3) {
+            animation-delay: 0.5s;
+        }
+
+        .feature-card:nth-child(4) {
+            animation-delay: 0.6s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px) rotateY(-5deg);
+        }
+
+        .feature-icon {
+            animation: float 3s ease-in-out infinite;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: scale(1.2) rotate(10deg);
+        }
+
+        .step {
+            animation: fadeInUp 0.6s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .step:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+
+        .step:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+
+        .step:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        .step-number {
+            animation: bounce 2s ease-in-out infinite;
+            transition: all 0.3s ease;
+        }
+
+        .step:hover .step-number {
+            transform: scale(1.2) rotateY(360deg);
+            animation: none;
+        }
+
+        .final-cta {
+            animation: scaleIn 0.8s ease-out 0.5s both;
+            perspective: 1000px;
+        }
+
+        .final-cta:hover {
+            transform: perspective(1000px) rotateX(2deg) rotateY(2deg);
+        }
+
+        .testimonial-placeholder {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .logo-box {
+            animation: rotateIn 0.6s ease-out;
+            animation-fill-mode: both;
+            transition: all 0.3s ease;
+        }
+
+        .logo-box:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .logo-box:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .logo-box:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .logo-box:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .logo-box:hover {
+            transform: scale(1.08) translateY(-5px);
+            background-color: #e5e7eb;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">TaskFlow</div>
+                <button class="mobile-menu-btn" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <nav>
+                    <a href="#features">Features</a>
+                    <a href="#how-it-works">How It Works</a>
+                    <a href="#pricing">Pricing</a>
+                    <a href="contact.html">Contact</a>
+                    <a href="admin-dashboard.html" style="background-color: #0ea5e9; color: white; padding: 10px 20px; border-radius: 6px; margin-left: 0; font-weight: 600;">Admin</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Stop Juggling Projects. Start Managing Them.</h1>
+            <h2>Bring your team's chaos into control—streamline workflows, track progress, and hit every deadline with one simple platform.</h2>
+            <div>
+                <a href="signup.html" class="cta-button" style="display: inline-block; text-decoration: none;">Start Free Trial (14 Days)</a>
+                <a href="demo.html" class="cta-button secondary" style="text-decoration: none;">See a Demo</a>
+            </div>
+            <div style="margin-top: 50px;">
+                <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&h=600&fit=crop" alt="Team collaboration" style="border-radius: 12px; box-shadow: 0 20px 60px rgba(14, 165, 233, 0.3); max-width: 100%; height: auto;">
+            </div>
+        </div>
+    </section>
+
+    <!-- Agitation Section -->
+    <section class="agitation">
+        <div class="container">
+            <h2>Your Project Management is Broken. Here's Why.</h2>
+            <div class="pain-points">
+                <div class="pain-point">
+                    <h3>⏰ Deadlines Keep Getting Missed</h3>
+                    <p>With tasks scattered across email, Slack, and spreadsheets, critical deadlines slip through the cracks. Your team doesn't have a single source of truth.</p>
+                </div>
+                <div class="pain-point">
+                    <h3>💬 Communication is a Nightmare</h3>
+                    <p>Email threads get lost. Slack messages disappear. Updates happen everywhere except where they need to be. Progress stays unclear.</p>
+                </div>
+                <div class="pain-point">
+                    <h3>❓ Nobody Knows Who's Doing What</h3>
+                    <p>Accountability is fuzzy. It's unclear who owns what task, when deliverables are due, and why projects keep falling behind schedule.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solution Section -->
+    <section class="solution" id="features">
+        <div class="container">
+            <h2>Everything You Need in One Place</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Visual Timelines Keep Deadlines on Track</h3>
+                    <p>See your entire project at a glance with interactive Gantt charts. Spot bottlenecks instantly. Adjust schedules in seconds. No more surprises.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💬</div>
+                    <h3>Centralized Collaboration That Actually Works</h3>
+                    <p>All team conversations, updates, and decisions live right next to each task. No more hunting through email. Everyone stays on the same page.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">✅</div>
+                    <h3>Real-Time Progress Tracking So Nothing Falls Behind</h3>
+                    <p>Watch your team's progress unfold in real time. Get instant notifications when tasks are blocked or overdue. Stay ahead of problems before they happen.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>Work from Anywhere, Anytime</h3>
+                    <p>Native apps for mobile and desktop. Sync instantly. Your team stays connected whether they're in the office, at home, or on the road.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Proof Section -->
+    <section class="social-proof">
+        <div class="container">
+            <h2>Trusted by Teams Just Like Yours</h2>
+            
+            <div class="testimonial-placeholder">
+                <p>"TaskFlow completely transformed how our team communicates. We went from chaos to clarity in two weeks. It's the one tool we actually use instead of avoiding."</p>
+                <div class="testimonial-author">— Sarah Chen, Product Manager @ TechStartup Inc.</div>
+            </div>
+
+            <div class="testimonial-placeholder">
+                <p>"We were spending 5 hours a week just trying to figure out what everyone was working on. TaskFlow eliminated that instantly. It paid for itself in the first month."</p>
+                <div class="testimonial-author">— Marcus Rodriguez, Founder @ Growth & Co.</div>
+            </div>
+
+            <div class="testimonial-placeholder">
+                <p>"As a remote team lead managing 12 people across 4 time zones, TaskFlow is the single source of truth we desperately needed. Transparency is finally built in."</p>
+                <div class="testimonial-author">— Jennifer Liu, Team Lead @ Digital Ventures</div>
+            </div>
+
+            <div class="testimonial-placeholder">
+                <p>"The setup took 15 minutes. The ROI came in the first week. Our project delivery improved by 34% without adding any headcount."</p>
+                <div class="testimonial-author">— David Patel, Operations Director @ Nexus Solutions</div>
+            </div>
+
+            <h3 style="margin-top: 60px; margin-bottom: 30px;">Trusted by 5,000+ teams worldwide:</h3>
+            <div class="logos-placeholder">
+                <div class="logo-box">🚀 VentureLab</div>
+                <div class="logo-box">💼 CloudSync</div>
+                <div class="logo-box">⚡ SpeedCode</div>
+                <div class="logo-box">🎯 FocusTeam</div>
+                <div class="logo-box">📊 DataFlow</div>
+                <div class="logo-box">⭐ Innovate.co</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="container">
+            <h2>Get Started in 3 Minutes</h2>
+            <div class="steps-container">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Sign Up (Free)</h3>
+                    <p>Create your account in seconds. No credit card needed. No lengthy setup. Just you, your team, and a better way to work.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Add Your Projects</h3>
+                    <p>Invite your team and create your first project. Bulk import tasks from your existing tools if you want, or start fresh with our templates.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Start Collaborating</h3>
+                    <p>Assign tasks, set deadlines, and collaborate in real time. Your team immediately starts staying more aligned and getting more done.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA Section -->
+    <section class="final-cta" id="pricing">
+        <div class="container">
+            <h2>Join 5,000+ Teams Already Using TaskFlow</h2>
+            <p>Start your 14-day free trial today. Full access to all features. No credit card required. Cancel anytime (but you won't want to).</p>
+            <div class="cta-flex">
+                <a href="signup.html" class="cta-button" style="display: inline-block; text-decoration: none;">Start My Free Trial</a>
+            </div>
+            <div class="trust-message">
+                ✓ <strong>14-day free trial</strong> | ✓ <strong>No credit card</strong> | ✓ <strong>Full feature access</strong>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>
+                <a href="#privacy">Privacy Policy</a>
+                <a href="#terms">Terms of Service</a>
+                <a href="#contact">Contact Us</a>
+                <a href="#support">Support</a>
+            </p>
+            <p style="margin-top: 20px;">&copy; 2026 TaskFlow. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Menu Toggle
+        const mobileBtn = document.querySelector('.mobile-menu-btn');
+        const nav = document.querySelector('nav');
+        const navLinks = document.querySelectorAll('nav a');
+
+        mobileBtn.addEventListener('click', () => {
+            mobileBtn.classList.toggle('active');
+            nav.classList.toggle('active');
+            document.body.style.overflow = nav.classList.contains('active') ? 'hidden' : '';
+        });
+
+        // Close menu when clicking a link
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileBtn.classList.remove('active');
+                nav.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        });
+    </script>
+</body>
+</html>

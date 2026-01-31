@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - TaskFlow</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f3f4f6;
+            color: #333;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background-color: #1f2937;
+            color: white;
+            min-height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .sidebar-logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0ea5e9;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #374151;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 10px;
+        }
+
+        .sidebar-menu a {
+            color: #d1d5db;
+            text-decoration: none;
+            display: block;
+            padding: 12px 15px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background-color: #0ea5e9;
+            color: white;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            padding: 30px;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: white;
+            padding: 20px 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .admin-header h1 {
+            font-size: 28px;
+            color: #1f2937;
+        }
+
+        body.dark-mode .admin-header h1 {
+            color: #f0f0f0;
+        }
+
+        .admin-header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .date-filter {
+            padding: 10px 15px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            background-color: white;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #0ea5e9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+            border-left: 4px solid #0ea5e9;
+        }
+
+        .stat-card:hover {
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+            transform: translateY(-5px);
+        }
+
+        .stat-card.blue {
+            border-left-color: #0ea5e9;
+        }
+
+        .stat-card.green {
+            border-left-color: #10b981;
+        }
+
+        .stat-card.purple {
+            border-left-color: #8b5cf6;
+        }
+
+        .stat-card.orange {
+            border-left-color: #f59e0b;
+        }
+
+        .stat-card.red {
+            border-left-color: #ef4444;
+        }
+
+        .stat-icon {
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+
+        .stat-change {
+            font-size: 12px;
+            color: #10b981;
+        }
+
+        .stat-change.negative {
+            color: #ef4444;
+        }
+
+        /* Charts Section */
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .chart-card {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .chart-card h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 20px;
+        }
+
+        .chart-placeholder {
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            height: 300px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #9ca3af;
+            font-size: 14px;
+        }
+
+        /* Tables */
+        .table-card {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+
+        .table-card h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table thead {
+            background-color: #f9fafb;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        table th {
+            padding: 15px;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        table td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 14px;
+            color: #374151;
+        }
+
+        table tbody tr:hover {
+            background-color: #f9fafb;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-inactive {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-pending {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        /* Content Sections */
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            margin-top: 20px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6b7280;
+        }
+
+        .empty-state h2 {
+            font-size: 24px;
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+
+
+
+        /* Mobile Sidebar Toggle */
+        .mobile-sidebar-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #1f2937;
+            margin-right: 15px;
+        }
+
+        /* Overlay */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .mobile-sidebar-toggle {
+                display: block;
+            }
+
+            .sidebar {
+                width: 260px;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease-in-out;
+                z-index: 1000;
+                position: fixed;
+                height: 100vh;
+                top: 0;
+                left: 0;
+                border-bottom: none;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .sidebar-overlay.active {
+                display: block;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 15px;
+                width: 100%;
+            }
+
+            .admin-header {
+                flex-direction: column;
+                gap: 15px;
+                padding: 20px;
+            }
+            
+            .header-left-container {
+                display: flex;
+                align-items: center;
+                width: 100%;
+            }
+
+            .admin-header-right {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar-menu {
+                display: block;
+            }
+
+            .sidebar-menu li {
+                margin-bottom: 10px;
+            }
+            
+            /* Table responsiveness */
+            .table-card {
+                overflow-x: auto;
+            }
+            
+            table {
+                min-width: 600px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Overlay -->
+    <div class="sidebar-overlay"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            📊 TaskFlow Admin
+            <button class="mobile-sidebar-toggle" style="float: right; color: white; font-size: 20px;">✕</button>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="#dashboard" class="active">Dashboard</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#accounts">Accounts</a></li>
+            <li><a href="#users">Users</a></li>
+            <li><a href="#analytics">Analytics</a></li>
+            <li><a href="#billing">Billing</a></li>
+            <li><a href="#settings">Settings</a></li>
+            <li><a href="index.html">← Back to Site</a></li>
+        </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="admin-header">
+            <div class="header-left-container">
+                <button class="mobile-sidebar-toggle">☰</button>
+                <div>
+                    <h1>Dashboard</h1>
+                    <p style="color: #6b7280; font-size: 14px; margin-top: 5px;">Welcome back, Admin</p>
+                </div>
+            </div>
+            <div class="admin-header-right">
+                <select class="date-filter">
+                    <option>Last 30 Days</option>
+                    <option>Last 90 Days</option>
+                    <option>Last Year</option>
+                    <option>All Time</option>
+                </select>
+                <div class="user-profile">
+                    <div class="user-avatar">A</div>
+                    <span style="font-size: 14px;">Admin</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div id="dashboard" class="section active">
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card blue">
+                    <div class="stat-icon">📁</div>
+                    <div class="stat-label">Active Projects</div>
+                    <div class="stat-value">247</div>
+                    <div class="stat-change">↑ 12% from last month</div>
+                </div>
+
+                <div class="stat-card green">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-label">Total Accounts</div>
+                    <div class="stat-value">1,842</div>
+                    <div class="stat-change">↑ 8% from last month</div>
+                </div>
+
+                <div class="stat-card purple">
+                    <div class="stat-icon">👨‍💼</div>
+                    <div class="stat-label">Active Users</div>
+                    <div class="stat-value">5,234</div>
+                    <div class="stat-change">↑ 15% from last month</div>
+                </div>
+
+                <div class="stat-card orange">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-label">Monthly Revenue</div>
+                    <div class="stat-value">$124,580</div>
+                    <div class="stat-change">↑ 22% from last month</div>
+                </div>
+
+                <div class="stat-card red">
+                    <div class="stat-icon">⚠️</div>
+                    <div class="stat-label">Support Tickets</div>
+                    <div class="stat-value">34</div>
+                    <div class="stat-change negative">↑ 5 unresolved</div>
+                </div>
+
+                <div class="stat-card blue">
+                    <div class="stat-icon">⭐</div>
+                    <div class="stat-label">Avg. Rating</div>
+                    <div class="stat-value">4.8/5</div>
+                    <div class="stat-change">Based on 542 reviews</div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="charts-container">
+                <div class="chart-card">
+                    <h3>Revenue Trend (Last 6 Months)</h3>
+                    <div class="chart-placeholder">📈 Chart Visualization Here</div>
+                </div>
+
+                <div class="chart-card">
+                    <h3>User Growth</h3>
+                    <div class="chart-placeholder">📊 Chart Visualization Here</div>
+                </div>
+            </div>
+
+            <!-- Recent Projects Table -->
+            <div class="table-card">
+                <h3>Recent Projects</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Project Name</th>
+                            <th>Account</th>
+                            <th>Tasks</th>
+                            <th>Team Members</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Website Redesign</td>
+                            <td>TechStartup Inc.</td>
+                            <td>24</td>
+                            <td>8</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                            <td>Jan 15, 2026</td>
+                        </tr>
+                        <tr>
+                            <td>Mobile App MVP</td>
+                            <td>Growth & Co.</td>
+                            <td>42</td>
+                            <td>12</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                            <td>Jan 10, 2026</td>
+                        </tr>
+                        <tr>
+                            <td>Marketing Campaign Q1</td>
+                            <td>Digital Ventures</td>
+                            <td>18</td>
+                            <td>5</td>
+                            <td><span class="status-badge status-pending">Pending</span></td>
+                            <td>Jan 8, 2026</td>
+                        </tr>
+                        <tr>
+                            <td>System Integration</td>
+                            <td>Nexus Solutions</td>
+                            <td>56</td>
+                            <td>15</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                            <td>Jan 5, 2026</td>
+                        </tr>
+                        <tr>
+                            <td>Data Migration</td>
+                            <td>CloudSync</td>
+                            <td>32</td>
+                            <td>6</td>
+                            <td><span class="status-badge status-inactive">Completed</span></td>
+                            <td>Dec 28, 2025</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Top Accounts Table -->
+            <div class="table-card">
+                <h3>Top Accounts by Activity</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Account Name</th>
+                            <th>Projects</th>
+                            <th>Users</th>
+                            <th>Monthly Spend</th>
+                            <th>Plan</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>TechStartup Inc.</td>
+                            <td>12</td>
+                            <td>45</td>
+                            <td>$2,995</td>
+                            <td>Enterprise</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                        </tr>
+                        <tr>
+                            <td>Nexus Solutions</td>
+                            <td>8</td>
+                            <td>32</td>
+                            <td>$1,995</td>
+                            <td>Professional</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                        </tr>
+                        <tr>
+                            <td>Digital Ventures</td>
+                            <td>15</td>
+                            <td>52</td>
+                            <td>$3,495</td>
+                            <td>Enterprise</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                        </tr>
+                        <tr>
+                            <td>CloudSync</td>
+                            <td>6</td>
+                            <td>28</td>
+                            <td>$995</td>
+                            <td>Starter</td>
+                            <td><span class="status-badge status-pending">Trial</span></td>
+                        </tr>
+                        <tr>
+                            <td>SpeedCode</td>
+                            <td>4</td>
+                            <td>18</td>
+                            <td>$595</td>
+                            <td>Starter</td>
+                            <td><span class="status-badge status-inactive">Inactive</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Projects Section -->
+        <div id="projects" class="section">
+            <div class="section-content">
+                <h2 style="font-size: 24px; margin-bottom: 20px; color: #1f2937;">All Projects</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Project Name</th>
+                            <th>Account</th>
+                            <th>Tasks</th>
+                            <th>Team Members</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Website Redesign</td>
+                            <td>TechStartup Inc.</td>
+                            <td>24</td>
+                            <td>8</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                            <td>Jan 15, 2026</td>
+                        </tr>
+                        <tr>
+                            <td>Mobile App MVP</td>
+                            <td>Growth & Co.</td>
+                            <td>42</td>
+                            <td>12</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                            <td>Jan 10, 2026</td>
+                        </tr>
+                        <tr>
+                            <td>Marketing Campaign Q1</td>
+                            <td>Digital Ventures</td>
+                            <td>18</td>
+                            <td>5</td>
+                            <td><span class="status-badge status-pending">Pending</span></td>
+                            <td>Jan 8, 2026</td>
+                        </tr>
+                        <tr>
+                            <td>System Integration</td>
+                            <td>Nexus Solutions</td>
+                            <td>56</td>
+                            <td>15</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                            <td>Jan 5, 2026</td>
+                        </tr>
+                        <tr>
+                            <td>Data Migration</td>
+                            <td>CloudSync</td>
+                            <td>32</td>
+                            <td>6</td>
+                            <td><span class="status-badge status-inactive">Completed</span></td>
+                            <td>Dec 28, 2025</td>
+                        </tr>
+                        <tr>
+                            <td>Cloud Backup System</td>
+                            <td>SpeedCode</td>
+                            <td>28</td>
+                            <td>9</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                            <td>Jan 12, 2026</td>
+                        </tr>
+                        <tr>
+                            <td>API Development</td>
+                            <td>TechStartup Inc.</td>
+                            <td>35</td>
+                            <td>7</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                            <td>Jan 3, 2026</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Accounts Section -->
+        <div id="accounts" class="section">
+            <div class="section-content">
+                <h2 style="font-size: 24px; margin-bottom: 20px; color: #1f2937;">All Accounts</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Account Name</th>
+                            <th>Projects</th>
+                            <th>Users</th>
+                            <th>Monthly Spend</th>
+                            <th>Plan</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>TechStartup Inc.</td>
+                            <td>12</td>
+                            <td>45</td>
+                            <td>$2,995</td>
+                            <td>Enterprise</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                        </tr>
+                        <tr>
+                            <td>Nexus Solutions</td>
+                            <td>8</td>
+                            <td>32</td>
+                            <td>$1,995</td>
+                            <td>Professional</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                        </tr>
+                        <tr>
+                            <td>Digital Ventures</td>
+                            <td>15</td>
+                            <td>52</td>
+                            <td>$3,495</td>
+                            <td>Enterprise</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                        </tr>
+                        <tr>
+                            <td>CloudSync</td>
+                            <td>6</td>
+                            <td>28</td>
+                            <td>$995</td>
+                            <td>Starter</td>
+                            <td><span class="status-badge status-pending">Trial</span></td>
+                        </tr>
+                        <tr>
+                            <td>SpeedCode</td>
+                            <td>4</td>
+                            <td>18</td>
+                            <td>$595</td>
+                            <td>Starter</td>
+                            <td><span class="status-badge status-inactive">Inactive</span></td>
+                        </tr>
+                        <tr>
+                            <td>InnovateLabs</td>
+                            <td>9</td>
+                            <td>38</td>
+                            <td>$2,495</td>
+                            <td>Professional</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Users Section -->
+        <div id="users" class="section">
+            <div class="section-content">
+                <h2 style="font-size: 24px; margin-bottom: 20px; color: #1f2937;">All Users</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User Name</th>
+                            <th>Email</th>
+                            <th>Account</th>
+                            <th>Role</th>
+                            <th>Last Login</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>John Smith</td>
+                            <td>john@techstartup.com</td>
+                            <td>TechStartup Inc.</td>
+                            <td>Admin</td>
+                            <td>Jan 18, 2026</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                        </tr>
+                        <tr>
+                            <td>Sarah Johnson</td>
+                            <td>sarah@digitalventures.com</td>
+                            <td>Digital Ventures</td>
+                            <td>Manager</td>
+                            <td>Jan 17, 2026</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                        </tr>
+                        <tr>
+                            <td>Mike Wilson</td>
+                            <td>mike@nexus.com</td>
+                            <td>Nexus Solutions</td>
+                            <td>User</td>
+                            <td>Jan 16, 2026</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                        </tr>
+                        <tr>
+                            <td>Emma Davis</td>
+                            <td>emma@cloudsync.com</td>
+                            <td>CloudSync</td>
+                            <td>User</td>
+                            <td>Jan 15, 2026</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                        </tr>
+                        <tr>
+                            <td>Alex Brown</td>
+                            <td>alex@speedcode.com</td>
+                            <td>SpeedCode</td>
+                            <td>User</td>
+                            <td>Dec 20, 2025</td>
+                            <td><span class="status-badge status-inactive">Inactive</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Analytics Section -->
+        <div id="analytics" class="section">
+            <div class="section-content">
+                <h2 style="font-size: 24px; margin-bottom: 30px; color: #1f2937;">Analytics</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                    <div class="chart-card">
+                        <h3>Page Views (Last 30 Days)</h3>
+                        <div class="chart-placeholder">📊 12,458 Views</div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>User Engagement</h3>
+                        <div class="chart-placeholder">👥 8,234 Interactions</div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Conversion Rate</h3>
+                        <div class="chart-placeholder">📈 3.8% Conversion</div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Top Features Used</h3>
+                        <div class="chart-placeholder">⭐ Task Management</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Billing Section -->
+        <div id="billing" class="section">
+            <div class="section-content">
+                <h2 style="font-size: 24px; margin-bottom: 20px; color: #1f2937;">Billing & Payments</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Account</th>
+                            <th>Plan</th>
+                            <th>Monthly Amount</th>
+                            <th>Billing Date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>TechStartup Inc.</td>
+                            <td>Enterprise</td>
+                            <td>$2,995</td>
+                            <td>Jan 5</td>
+                            <td><span class="status-badge status-active">Paid</span></td>
+                            <td><a href="#" style="color: #0ea5e9;">View Invoice</a></td>
+                        </tr>
+                        <tr>
+                            <td>Digital Ventures</td>
+                            <td>Enterprise</td>
+                            <td>$3,495</td>
+                            <td>Jan 10</td>
+                            <td><span class="status-badge status-active">Paid</span></td>
+                            <td><a href="#" style="color: #0ea5e9;">View Invoice</a></td>
+                        </tr>
+                        <tr>
+                            <td>Nexus Solutions</td>
+                            <td>Professional</td>
+                            <td>$1,995</td>
+                            <td>Jan 8</td>
+                            <td><span class="status-badge status-active">Paid</span></td>
+                            <td><a href="#" style="color: #0ea5e9;">View Invoice</a></td>
+                        </tr>
+                        <tr>
+                            <td>CloudSync</td>
+                            <td>Starter</td>
+                            <td>$995</td>
+                            <td>Jan 15</td>
+                            <td><span class="status-badge status-pending">Pending</span></td>
+                            <td><a href="#" style="color: #0ea5e9;">View Invoice</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Settings Section -->
+        <div id="settings" class="section">
+            <div class="section-content">
+                <h2 style="font-size: 24px; margin-bottom: 30px; color: #1f2937;">Settings</h2>
+                <div style="max-width: 600px;">
+                    <div style="margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #e5e7eb;">
+                        <h3 style="font-size: 18px; color: #1f2937; margin-bottom: 10px;">General Settings</h3>
+                        <label style="display: block; margin: 15px 0; color: #374151;">
+                            <input type="checkbox" checked> Enable Notifications
+                        </label>
+                        <label style="display: block; margin: 15px 0; color: #374151;">
+                            <input type="checkbox" checked> Email Reports
+                        </label>
+                    </div>
+
+                    <div style="margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #e5e7eb;">
+                        <h3 style="font-size: 18px; color: #1f2937; margin-bottom: 10px;">Security</h3>
+                        <label style="display: block; margin: 15px 0; color: #374151;">
+                            <input type="checkbox" checked> Two-Factor Authentication
+                        </label>
+                        <label style="display: block; margin: 15px 0; color: #374151;">
+                            <input type="checkbox" checked> Login Alerts
+                        </label>
+                    </div>
+
+                    <div style="margin-bottom: 30px;">
+                        <h3 style="font-size: 18px; color: #1f2937; margin-bottom: 10px;">Account</h3>
+                        <button style="padding: 10px 20px; background-color: #ef4444; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px;">Reset Password</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data for different date ranges
+        const dataByPeriod = {
+            '30days': {
+                projects: 247,
+                projectsChange: '↑ 12% from last period',
+                accounts: 1842,
+                accountsChange: '↑ 8% from last period',
+                users: 5234,
+                usersChange: '↑ 15% from last period',
+                revenue: '$124,580',
+                revenueChange: '↑ 22% from last period',
+                tickets: 34,
+                ticketsChange: '↑ 5 unresolved',
+                rating: '4.8/5'
+            },
+            '90days': {
+                projects: 312,
+                projectsChange: '↑ 26% from last quarter',
+                accounts: 2156,
+                accountsChange: '↑ 17% from last quarter',
+                users: 6847,
+                usersChange: '↑ 31% from last quarter',
+                revenue: '$389,450',
+                revenueChange: '↑ 45% from last quarter',
+                tickets: 58,
+                ticketsChange: '↑ 12 unresolved',
+                rating: '4.7/5'
+            },
+            'year': {
+                projects: 485,
+                projectsChange: '↑ 52% from last year',
+                accounts: 3421,
+                accountsChange: '↑ 48% from last year',
+                users: 9234,
+                usersChange: '↑ 78% from last year',
+                revenue: '$1,245,820',
+                revenueChange: '↑ 92% from last year',
+                tickets: 156,
+                ticketsChange: '↑ 28 unresolved',
+                rating: '4.6/5'
+            },
+            'alltime': {
+                projects: 658,
+                projectsChange: 'Since platform launch',
+                accounts: 4892,
+                accountsChange: 'Total accounts created',
+                users: 12458,
+                usersChange: 'Total users registered',
+                revenue: '$2,845,320',
+                revenueChange: 'Total platform revenue',
+                tickets: 342,
+                ticketsChange: '↑ 45 unresolved',
+                rating: '4.5/5'
+            }
+        };
+
+        // Handle date filter change
+        document.querySelector('.date-filter').addEventListener('change', function(e) {
+            const selectedValue = e.target.value;
+            let dataKey = 'alltime';
+            
+            if (selectedValue.includes('30')) {
+                dataKey = '30days';
+            } else if (selectedValue.includes('90')) {
+                dataKey = '90days';
+            } else if (selectedValue.includes('Year')) {
+                dataKey = 'year';
+            }
+
+            updateDashboardData(dataKey);
+        });
+
+        // Update dashboard statistics
+        function updateDashboardData(dataKey) {
+            const data = dataByPeriod[dataKey];
+            const cards = document.querySelectorAll('.stat-card');
+
+            // Update Projects card
+            cards[0].querySelector('.stat-value').textContent = data.projects;
+            cards[0].querySelector('.stat-change').textContent = data.projectsChange;
+
+            // Update Accounts card
+            cards[1].querySelector('.stat-value').textContent = data.accounts;
+            cards[1].querySelector('.stat-change').textContent = data.accountsChange;
+
+            // Update Users card
+            cards[2].querySelector('.stat-value').textContent = data.users;
+            cards[2].querySelector('.stat-change').textContent = data.usersChange;
+
+            // Update Revenue card
+            cards[3].querySelector('.stat-value').textContent = data.revenue;
+            cards[3].querySelector('.stat-change').textContent = data.revenueChange;
+
+            // Update Tickets card
+            cards[4].querySelector('.stat-value').textContent = data.tickets;
+            const ticketChange = cards[4].querySelector('.stat-change');
+            ticketChange.textContent = data.ticketsChange;
+            ticketChange.classList.add('negative');
+
+            // Update Rating card
+            cards[5].querySelector('.stat-value').textContent = data.rating;
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            // Default to 30 days on load
+            document.querySelector('.date-filter').value = 'Last 30 Days';
+            updateDashboardData('30days');
+
+            // Setup sidebar menu functionality
+            setupSidebarMenu();
+        });
+
+        // Sidebar menu functionality
+        function setupSidebarMenu() {
+            const menuLinks = document.querySelectorAll('.sidebar-menu a');
+            
+            menuLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    // Don't prevent default for external links (Back to Site)
+                    if (this.href.includes('index.html') || this.href.startsWith('http')) {
+                        return;
+                    }
+
+                    e.preventDefault();
+
+                    // Remove active class from all links
+                    menuLinks.forEach(l => l.classList.remove('active'));
+
+                    // Add active class to clicked link
+                    this.classList.add('active');
+
+                    // Get the section id from href
+                    const sectionId = this.getAttribute('href').substring(1);
+
+                    // Show the section
+                    showSection(sectionId);
+                });
+            });
+
+            // Set active menu item based on current hash
+            const currentHash = window.location.hash.substring(1) || 'dashboard';
+            const activeLink = document.querySelector(`.sidebar-menu a[href="#${currentHash}"]`);
+            if (activeLink) {
+                menuLinks.forEach(l => l.classList.remove('active'));
+                activeLink.classList.add('active');
+                showSection(currentHash);
+            }
+        }
+
+        // Show specific section and hide others
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.section');
+            
+            sections.forEach(section => {
+                if (section.id === sectionId) {
+                    section.classList.add('active');
+                } else {
+                    section.classList.remove('active');
+                }
+            });
+
+            // Update page title
+            const titleMap = {
+                'dashboard': 'Dashboard',
+                'projects': 'Projects',
+                'accounts': 'Accounts',
+                'users': 'Users',
+                'analytics': 'Analytics',
+                'billing': 'Billing',
+                'settings': 'Settings'
+            };
+
+            const mainHeader = document.querySelector('.admin-header h1');
+            if (mainHeader && titleMap[sectionId]) {
+                mainHeader.textContent = titleMap[sectionId];
+            }
+
+            // Update URL hash
+            window.location.hash = sectionId;
+
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        // Update content based on selected menu item
+        function updateContent(sectionId) {
+            console.log('Navigating to section:', sectionId);
+            showSection(sectionId);
+        }
+
+        // Handle hash changes from browser back/forward buttons
+        window.addEventListener('hashchange', function() {
+            const currentHash = window.location.hash.substring(1) || 'dashboard';
+            const menuLinks = document.querySelectorAll('.sidebar-menu a');
+            
+            menuLinks.forEach(link => {
+                if (link.getAttribute('href') === `#${currentHash}`) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+
+            showSection(currentHash);
+        });
+
+        // Mobile Sidebar Toggle
+        const mobileSidebarToggle = document.querySelectorAll('.mobile-sidebar-toggle');
+        const sidebar = document.querySelector('.sidebar');
+        const overlay = document.querySelector('.sidebar-overlay');
+        const sidebarLinks = document.querySelectorAll('.sidebar-menu a');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+            document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+        }
+
+        mobileSidebarToggle.forEach(btn => {
+            btn.addEventListener('click', toggleSidebar);
+        });
+
+        overlay.addEventListener('click', toggleSidebar);
+
+        // Close sidebar when clicking a link on mobile
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.remove('active');
+                    overlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>

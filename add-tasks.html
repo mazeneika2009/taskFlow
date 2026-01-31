@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Tasks - TaskFlow</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f9fafb;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            background-color: white;
+            padding: 20px 0;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 40px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0ea5e9;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            background: #6366f1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+        }
+
+        .sidebar {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            height: fit-content;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .sidebar h2 {
+            font-size: 16px;
+            color: #1f2937;
+            margin-bottom: 20px;
+        }
+
+        .progress-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .progress-step {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #f3f4f6;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .progress-step:hover:not(.active):not(.completed) {
+            background-color: #e5e7eb;
+        }
+
+        .progress-step.active {
+            background-color: #6366f1;
+            color: white;
+        }
+
+        .progress-step.completed {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .step-number {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            background-color: white;
+            color: #6366f1;
+        }
+
+        .progress-step.active .step-number {
+            background-color: white;
+            color: #6366f1;
+        }
+
+        .progress-step.completed .step-number {
+            background-color: #10b981;
+            color: white;
+        }
+
+        .form-card {
+            background-color: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-card h1 {
+            font-size: 32px;
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+
+        .form-card .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: #1f2937;
+            font-size: 14px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .task-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .task-input-group input {
+            flex: 1;
+        }
+
+        .btn-add-task {
+            padding: 12px 25px;
+            background-color: #6366f1;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .btn-add-task:hover {
+            background-color: #4f46e5;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .tasks-list {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .tasks-list h3 {
+            font-size: 18px;
+            color: #1f2937;
+            margin-bottom: 20px;
+        }
+
+        .task-item {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 15px;
+            padding: 15px;
+            background-color: #f9fafb;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            align-items: center;
+        }
+
+        .task-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .task-content {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .task-title {
+            font-weight: 500;
+            color: #1f2937;
+        }
+
+        .task-assignee {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .task-remove {
+            background-color: transparent;
+            border: none;
+            color: #ef4444;
+            cursor: pointer;
+            font-size: 20px;
+            transition: opacity 0.3s;
+        }
+
+        .task-remove:hover {
+            opacity: 0.7;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        .info-box {
+            background-color: #f0f9ff;
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 25px;
+            font-size: 14px;
+            color: #1e40af;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 40px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background-color: #f3f4f6;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e5e7eb;
+        }
+
+        .skip-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .skip-link a {
+            color: #6366f1;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .skip-link a:hover {
+            text-decoration: underline;
+        }
+
+        .task-count {
+            background-color: #6366f1;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        /* Modern Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        header {
+            animation: fadeInDown 0.6s ease-out;
+        }
+
+        .sidebar {
+            animation: slideInLeft 0.7s ease-out 0.2s both;
+        }
+
+        .main-content {
+            animation: fadeInUp 0.8s ease-out 0.3s both;
+        }
+
+        .form-section {
+            animation: scaleIn 0.6s ease-out 0.3s both;
+            perspective: 1000px;
+        }
+
+        .form-group {
+            animation: fadeInUp 0.5s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .form-group:nth-child(1) {
+            animation-delay: 0.4s;
+        }
+
+        .form-group:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+
+        .form-group:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+
+        .form-group:nth-child(4) {
+            animation-delay: 0.7s;
+        }
+
+        input, textarea, select {
+            transition: all 0.3s ease;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            transform: scale(1.02);
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.2);
+        }
+
+        .task-input-group {
+            animation: fadeInUp 0.6s ease-out 0.5s both;
+        }
+
+        .btn-add-task {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-add-task::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.3);
+            transition: left 0.5s ease;
+            z-index: -1;
+        }
+
+        .btn-add-task:hover::before {
+            left: 100%;
+        }
+
+        .task-item {
+            animation: slideIn 0.4s ease-out;
+            animation-fill-mode: both;
+            perspective: 1000px;
+            transition: all 0.3s ease;
+        }
+
+        .task-item:hover {
+            transform: translateX(5px) rotateY(-2deg);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .tasks-list {
+            animation: fadeInUp 0.6s ease-out 0.5s both;
+        }
+
+        .step-item {
+            animation: fadeInUp 0.5s ease-out;
+            animation-fill-mode: both;
+            transition: all 0.3s ease;
+        }
+
+        .step-item:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+
+        .step-item:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+
+        .step-item:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        .step-item:hover {
+            transform: translateX(5px);
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .task-input-group {
+                flex-direction: column;
+            }
+
+            .btn-add-task {
+                width: 100%;
+            }
+
+            .task-item {
+                grid-template-columns: auto 1fr;
+            }
+
+            .task-remove {
+                grid-column: 2;
+                justify-self: end;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                order: -1;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="header-content">
+                <div class="logo">TaskFlow</div>
+                <div class="user-profile">
+                    <span id="userGreeting">Welcome, User!</span>
+                    <div class="avatar" id="userInitials">U</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Sidebar Progress -->
+            <div class="sidebar">
+                <h2>Setup Progress</h2>
+                <div class="progress-steps">
+                    <div class="progress-step completed">
+                        <div class="step-number">✓</div>
+                        <span>Create Account</span>
+                    </div>
+                    <div class="progress-step completed">
+                        <div class="step-number">✓</div>
+                        <span>Create Project</span>
+                    </div>
+                    <div class="progress-step completed">
+                        <div class="step-number">✓</div>
+                        <span>Invite Team</span>
+                    </div>
+                    <div class="progress-step active">
+                        <div class="step-number">4</div>
+                        <span>Add Tasks</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Card -->
+            <div class="form-card">
+                <h1>Add Your First Tasks</h1>
+                <p class="subtitle">Create tasks for your team to get them organized and ready to collaborate</p>
+
+                <div class="info-box">
+                    💡 Tasks are optional for now. You can always add, edit, or delete them later from your project dashboard
+                </div>
+
+                <form id="tasksForm">
+                    <div class="form-group">
+                        <label for="taskTitle">Task Title *</label>
+                        <div class="task-input-group">
+                            <input type="text" id="taskTitle" placeholder="e.g., Design Homepage, Write API Documentation" required>
+                            <button type="button" class="btn-add-task" onclick="addTask(event)">+ Add Task</button>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="taskAssignee">Assign To</label>
+                            <select id="taskAssignee" name="taskAssignee">
+                                <option value="">Unassigned</option>
+                                <option value="you">You</option>
+                                <option value="team">Team Member</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="taskDueDate">Due Date</label>
+                            <input type="date" id="taskDueDate" name="taskDueDate">
+                        </div>
+                    </div>
+
+                    <div id="tasksList" class="tasks-list" style="display: none;">
+                        <!-- Tasks will be added here -->
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" class="btn btn-secondary" onclick="navigateTo('invite-team.html')">Back</button>
+                        <button type="submit" class="btn btn-primary" onclick="handleTasksSubmit(event)">Complete Setup</button>
+                    </div>
+
+                    <div class="skip-link">
+                        <a href="#" onclick="skipTasks(event)">Skip and go to dashboard</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let tasks = [];
+
+        function addTask(event) {
+            event.preventDefault();
+            const taskTitle = document.getElementById('taskTitle').value.trim();
+            const taskAssignee = document.getElementById('taskAssignee').value;
+            const taskDueDate = document.getElementById('taskDueDate').value;
+
+            if (!taskTitle) {
+                alert('Please enter a task title');
+                return;
+            }
+
+            const task = {
+                id: Date.now(),
+                title: taskTitle,
+                assignee: taskAssignee || 'Unassigned',
+                dueDate: taskDueDate || 'No due date',
+                completed: false
+            };
+
+            tasks.push(task);
+            document.getElementById('taskTitle').value = '';
+            document.getElementById('taskAssignee').value = '';
+            document.getElementById('taskDueDate').value = '';
+            
+            renderTasks();
+            document.getElementById('taskTitle').focus();
+        }
+
+        function removeTask(id) {
+            tasks = tasks.filter(task => task.id !== id);
+            renderTasks();
+        }
+
+        function toggleTask(id) {
+            const task = tasks.find(t => t.id === id);
+            if (task) {
+                task.completed = !task.completed;
+                renderTasks();
+            }
+        }
+
+        function renderTasks() {
+            const tasksList = document.getElementById('tasksList');
+            
+            if (tasks.length === 0) {
+                tasksList.style.display = 'none';
+                return;
+            }
+
+            tasksList.style.display = 'block';
+            
+            let html = '<h3>Tasks <span class="task-count">' + tasks.length + '</span></h3>';
+            
+            tasks.forEach(task => {
+                const isCompleted = task.completed ? 'checked' : '';
+                const titleStyle = task.completed ? 'style="text-decoration: line-through; color: #999;"' : '';
+                
+                html += `
+                    <div class="task-item">
+                        <input type="checkbox" class="task-checkbox" ${isCompleted} onchange="toggleTask(${task.id})">
+                        <div class="task-content">
+                            <div class="task-title" ${titleStyle}>${task.title}</div>
+                            <div class="task-assignee">📅 ${task.dueDate} • 👤 ${task.assignee}</div>
+                        </div>
+                        <button type="button" class="task-remove" onclick="removeTask(${task.id})">✕</button>
+                    </div>
+                `;
+            });
+
+            tasksList.innerHTML = html;
+        }
+
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+
+        function handleTasksSubmit(event) {
+            event.preventDefault();
+            
+            let message = 'Setup complete! ';
+            if (tasks.length > 0) {
+                message += 'You\'ve added ' + tasks.length + ' task' + (tasks.length !== 1 ? 's' : '') + '. ';
+            } else {
+                message += 'No tasks added. ';
+            }
+            message += 'Your workspace is ready to go! Redirecting to dashboard...';
+            
+            // Save tasks and project data
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+            
+            alert(message);
+            navigateTo('dashboard.html');
+        }
+
+        function skipTasks(event) {
+            event.preventDefault();
+            let message = 'No tasks added. Your workspace is ready to go! Redirecting to dashboard...';
+            alert(message);
+            navigateTo('dashboard.html');
+        }
+
+        // Load and display user name from localStorage
+        function loadUserData() {
+            const userName = localStorage.getItem('userName') || 'User';
+            const userLastName = localStorage.getItem('userLastName') || '';
+            const userInitials = (userName.charAt(0) + userLastName.charAt(0)).toUpperCase();
+            
+            document.getElementById('userGreeting').textContent = 'Welcome, ' + userName + '!';
+            document.getElementById('userInitials').textContent = userInitials;
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserData();
+        });
+
+        // Allow adding tasks by pressing Enter
+        document.getElementById('taskTitle').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addTask(e);
+            }
+        });
+
+        document.getElementById('tasksForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+        });
+    </script>
+</body>
+</html>
